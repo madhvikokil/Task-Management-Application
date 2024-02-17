@@ -1,20 +1,25 @@
 import React, { useState } from 'react'; 
 import { useSelector, useDispatch } from 'react-redux';
-import { loginUserType, loggedInUser } from '../feature/login/loginSlice';
-import  data from '../constants/userLogin';
+import { loginUserType, loggedInUser, loginUserName } from '../feature/login/loginSlice';
+import { useNavigate } from "react-router-dom";
+import data  from '../userData';
+import './login.css';
 
 function Login() {
 
   const [ login, setLogin ] = useState({ userName: '', password: '' });
   const [ error, setError ] = useState(false);
-  const userType = useSelector((state) => state.login.userType)
+  // const userType = useSelector((state) => state.login.userType)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const changeHandler = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
   }
 
-  const submitHandler = () => {
+  const submitHandler = (e) => {
+    e.preventDefault();
     setLogin(login);
     const checkedData = data.userLoginData.find((data) => data.userName === login.userName && data.password === login.password);
     if(checkedData.userType === 'admin') {
@@ -22,11 +27,14 @@ function Login() {
 
       dispatch(loginUserType('admin'));
       dispatch(loggedInUser(true));
+      dispatch(loginUserName(login.userName));
+      navigate('/dashboard');
     }
     else if(checkedData.userType === 'iu') {
       dispatch(loginUserType('iu'));
       dispatch(loggedInUser(true));
-      setError(false);
+      dispatch(loginUserName(login.userName));
+      navigate('/dashboard');
 
     } else {
         setError(true);
@@ -34,10 +42,18 @@ function Login() {
   }
 
   return (
-    <div className="App">
-        <input type="text" name="userName" placeholder="User name" value={login.userName} onChange={(e) => changeHandler(e)} />
-        <input type="text" name="password" placeholder="Password" value={login.password} onChange={(e) => changeHandler(e)} />
-        <button type="submit" onClick={() => submitHandler()}>Login</button>
+    <div className='form-class'>
+      <form>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="text" class="form-control" name="userName" aria-describedby="emailHelp" placeholder="Username" onChange={(e) => changeHandler(e)}/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Password" onChange={(e) => changeHandler(e)}/>
+        </div>
+        <button class="btn btn-primary" onClick={(e) => submitHandler(e)}>Login</button>
+      </form>
     </div>
   );
 }
