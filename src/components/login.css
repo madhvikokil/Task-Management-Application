@@ -3,3 +3,30 @@
     margin: 10%;
     justify-content: center;
 }
+
+
+.grid-container {
+  display: grid;
+  grid-template-areas: 'auto auto auto auto auto';
+  gap: 10px;
+  grid-auto-flow: column row;
+  /* background-color: #2196F3; */
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  /* padding: 10px; */
+  font-size: 15px;
+}
+
+.item1 {
+    border: 1px solid grey;
+    padding: 10px;
+    margin-bottom: 10px;;
+}
+
+h4 {
+  padding: 10px;
+}

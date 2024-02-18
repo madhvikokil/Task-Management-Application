@@ -9,7 +9,6 @@ function Login() {
 
   const [ login, setLogin ] = useState({ userName: '', password: '' });
   const [ error, setError ] = useState(false);
-  // const userType = useSelector((state) => state.login.userType)
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,15 +21,14 @@ function Login() {
     e.preventDefault();
     setLogin(login);
     const checkedData = data.userLoginData.find((data) => data.userName === login.userName && data.password === login.password);
-    if(checkedData.userType === 'admin') {
-        setError(false);
-
+    if(checkedData && checkedData.userType === 'admin') {
+      // setError(false);
       dispatch(loginUserType('admin'));
       dispatch(loggedInUser(true));
       dispatch(loginUserName(login.userName));
       navigate('/dashboard');
     }
-    else if(checkedData.userType === 'iu') {
+    else if(checkedData && checkedData.userType === 'iu') {
       dispatch(loginUserType('iu'));
       dispatch(loggedInUser(true));
       dispatch(loginUserName(login.userName));
@@ -44,6 +42,7 @@ function Login() {
   return (
     <div className='form-class'>
       <form>
+        {error && <b style={{ color: 'red' }}>Invalid username and password!</b>}
         <div class="form-group">
           <label>Email address</label>
           <input type="text" class="form-control" name="userName" aria-describedby="emailHelp" placeholder="Username" onChange={(e) => changeHandler(e)}/>
