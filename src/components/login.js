@@ -4,6 +4,9 @@ import { loginUserType, loggedInUser, loginUserName } from '../feature/login/log
 import { useNavigate } from "react-router-dom";
 import data  from '../userData';
 import './login.css';
+import { app } from '../components/../firebaseConfig';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 
 function Login() {
 
@@ -12,31 +15,20 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const changeHandler = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
   }
 
+  const auth = getAuth();
   const submitHandler = (e) => {
     e.preventDefault();
-    setLogin(login);
-    const checkedData = data.userLoginData.find((data) => data.userName === login.userName && data.password === login.password);
-    if(checkedData && checkedData.userType === 'admin') {
-      // setError(false);
-      dispatch(loginUserType('admin'));
-      dispatch(loggedInUser(true));
-      dispatch(loginUserName(login.userName));
-      navigate('/dashboard');
-    }
-    else if(checkedData && checkedData.userType === 'iu') {
-      dispatch(loginUserType('iu'));
-      dispatch(loggedInUser(true));
-      dispatch(loginUserName(login.userName));
-      navigate('/dashboard');
-
-    } else {
-        setError(true);
-    }
+    createUserWithEmailAndPassword(auth, login.userName, login.password)
+    .then((res) => {
+      console.log(res.user);
+      navigate('/');
+    }).catch((err) => {
+      console.log(err.message);
+    })
   }
 
   return (
